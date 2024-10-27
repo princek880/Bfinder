@@ -79,6 +79,8 @@
 #define KSTAR892_MASS 0.89581
 #define DELTA1232PLUSPLUS_MASS 1.209
 #define LAMBDA1520_MASS 1.5195
+#define LAMBDAB_MASS 5.6202
+#define LAMBDA0_MASS 1.1157
 
 #define MUON_PDGID 13
 #define PION_PDGID 211
@@ -102,7 +104,8 @@
 #define CHIC1_PDGID 20443
 #define X_PDGID 9920443
 #define PSI2S_PDGID 100443
-
+#define LAMBDAB_PDGID 5122
+#define LAMBDA0_PDGID 3122
 
 class EvtInfoBranches{ //{{{
 	public:
