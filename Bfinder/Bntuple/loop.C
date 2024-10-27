@@ -23,8 +23,9 @@ int loop(std::string inputname, std::string outputname, bool REAL,
   ifchannel[3] = 0; // jpsi+K*(K+,pi-)
   ifchannel[4] = 0; // jpsi+K*(K-,pi+)
   ifchannel[5] = 0; // jpsi+phi(K+,K-)
-  ifchannel[6] = 1; // jpsi+pi pi <= psi', X(3872), Bs->J/psi f0
-  ifchannel[7] = 1; // inclusive jpsi
+  ifchannel[6] = 0; // jpsi+pi pi <= psi', X(3872), Bs->J/psi f0
+  ifchannel[7] = 1; // jpsi+lambda0(p+,pi-)                // ravi
+  ifchannel[8] = 1; // inclusive jpsi
   /********************************/
   
   std::cout<<std::endl;
@@ -93,7 +94,8 @@ int loop(std::string inputname, std::string outputname, bool REAL,
   nts["nt3"] = new TTree("ntKstar","");   Bntuple->buildBranch(nts["nt3"]);
   nts["nt5"] = new TTree("ntphi","");     Bntuple->buildBranch(nts["nt5"]);
   nts["nt6"] = new TTree("ntmix","");     Bntuple->buildBranch(nts["nt6"]);
-  nts["nt7"] = new TTree("ntJpsi","");    Bntuple->buildBranch(nts["nt7"], true);
+  nts["nt7"] = new TTree("ntLambda0","");     Bntuple->buildBranch(nts["nt7"]);     //ravi      16/09
+  nts["nt8"] = new TTree("ntJpsi","");    Bntuple->buildBranch(nts["nt8"], true);
   nts["ntGen"] = new TTree("ntGen","");   Bntuple->buildGenBranch(nts["ntGen"]);
 
   std::cout<<"--- Building trees finished"<<std::endl;
@@ -122,8 +124,8 @@ int loop(std::string inputname, std::string outputname, bool REAL,
           if(i >= treenentries[tt.first]) continue;
           tt.second->Fill();
         }
-      int Btypesize[nchannel]={0, 0, 0, 0, 0, 0, 0, 0};
-      Bntuple->makeNtuple(ifchannel, Btypesize, REAL, skim, EvtInfo, VtxInfo, MuonInfo, TrackInfo, BInfo, GenInfo, nts["nt0"], nts["nt1"], nts["nt2"], nts["nt3"], nts["nt5"], nts["nt6"], nts["nt7"]);
+      int Btypesize[nchannel]={0, 0, 0, 0, 0, 0, 0, 0, 0};                //ravi
+      Bntuple->makeNtuple(ifchannel, Btypesize, REAL, skim, EvtInfo, VtxInfo, MuonInfo, TrackInfo, BInfo, GenInfo, nts["nt0"], nts["nt1"], nts["nt2"], nts["nt3"], nts["nt5"], nts["nt6"]/*nts["nt7"]*/, nts["nt8"]);                  //ravi 16/09
       if(!REAL) Bntuple->fillGenTree(nts["ntGen"], GenInfo);
     }
   xjjc::progressbar_summary(nentries);

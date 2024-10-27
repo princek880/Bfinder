@@ -120,7 +120,8 @@ class Bfinder : public edm::one::EDAnalyzer<edm::one::WatchRuns>
         TTree* nt3;
         TTree* nt5;
         TTree* nt6;
-        TTree* nt7;
+        TTree* nt7;                      //ravi
+        TTree* nt8;
         TTree* ntGen;
 
         //histograms
@@ -142,7 +143,8 @@ void Bfinder::beginJob()
     nt3   = fs->make<TTree>("ntKstar","");  Bntuple->buildBranch(nt3);
     nt5   = fs->make<TTree>("ntphi","");    Bntuple->buildBranch(nt5);
     nt6   = fs->make<TTree>("ntmix","");    Bntuple->buildBranch(nt6);
-    nt7   = fs->make<TTree>("ntJpsi","");    Bntuple->buildBranch(nt7,true);
+    nt7   = fs->make<TTree>("ntlambda0","");    Bntuple->buildBranch(nt7);                  //ravi
+    nt8   = fs->make<TTree>("ntJpsi","");    Bntuple->buildBranch(nt8,true);
     ntGen = fs->make<TTree>("ntGen","");    Bntuple->buildGenBranch(ntGen);
     EvtInfo.regTree(root);
     VtxInfo.regTree(root);
@@ -417,7 +419,7 @@ void Bfinder::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         memset(genTrackPtr,0x00,MAX_TRACK*sizeof(genTrackPtr[0]));
         //standard check for validity of input data
         if (input_muons.size() == 0){
-            if (printInfo_) std::cout << "There's no muon : " << iEvent.id() << std::endl;
+            if (printInfo_) std::cout << "no muon : " << iEvent.id() << std::endl;
         }else{
             if (printInfo_) std::cout << "Got " << input_muons.size() << " muons / ";
             if (input_tracks.size() == 0){
@@ -1031,8 +1033,37 @@ void Bfinder::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
                                     7,
                                     0
                                 );
-                            }
-                            
+			    }
+
+			    
+			    //////////////////////////////////////////////////////////////////////////                                                                                                      
+                            // RECONSTRUCTION: J/psi + Lambda0(p+,pi-)                                                                                                                                         
+                            //////////////////////////////////////////////////////////////////////////                                                                                                                                                                                                                                                     
+                            TkTk_window = 0.25;
+                            if(Bchannel_[7] == 1){
+                                BranchOut2MuX_XtoTkTk(
+                                    BInfo,
+                                    input_tracks,
+                                    thePrimaryV,
+                                    isNeededTrack,
+                                    v4_mu1,
+                                    v4_mu2,
+                                    muonPTT,
+                                    muonMTT,
+                                    B_counter,
+                                    mass_window,
+                                    JPSI_MASS,
+                                    LAMBDA0_MASS,
+                                    TkTk_window,
+                                    PROTON_MASS,
+                                    PION_MASS,
+                                    8,
+                                    0
+                                );
+			    }
+			                                    //ravi 13/09
+
+			    
                         }//Mu2
                     }//Mu1
                     if(printInfo_){
@@ -1296,10 +1327,11 @@ void Bfinder::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         ifchannel[4] = 1; //jpsi+K*(K-,pi+)
         ifchannel[5] = 1; //jpsi+phi(K+,K-)
         ifchannel[6] = 1; //jpsi+pi pi <= psi', X(3872), Bs->J/psi f0
-        ifchannel[7] = 1; //inclusive jpsi
+	ifchannel[7] = 1; //jpsi+lambda0(p+,pi-)*/                 //ravi 18/09
+        ifchannel[8] = 1; //inclusive jpsi
         bool REAL = ((!iEvent.isRealData() && RunOnMC_) ? false:true);
-        int Btypesize[8]={0,0,0,0,0,0,0,0};
-        Bntuple->makeNtuple(ifchannel, Btypesize, REAL, doBntupleSkim_, &EvtInfo, &VtxInfo, &MuonInfo, &TrackInfo, &BInfo, &GenInfo, nt0, nt1, nt2, nt3, nt5, nt6, nt7);
+        int Btypesize[9]={0,0,0,0,0,0,0,0,0};                  //ravi
+        Bntuple->makeNtuple(ifchannel, Btypesize, REAL, doBntupleSkim_, &EvtInfo, &VtxInfo, &MuonInfo, &TrackInfo, &BInfo, &GenInfo, nt0, nt1, nt2, nt3, nt5, nt6, nt7, nt8);
         if(!REAL) Bntuple->fillGenTree(ntGen, &GenInfo);
     }
 }

@@ -101,14 +101,15 @@ def finderMaker_75X(process, AddCaloMuon = False, runOnMC = True, HIFormat = Fal
         ### Set Bfinder option
         process.Bfinder = cms.EDAnalyzer('Bfinder',
                                          Bchannel = cms.vint32(
-                                                 1,#RECONSTRUCTION: J/psi + K
+                                                 0,#RECONSTRUCTION: J/psi + K
                                                  0,#RECONSTRUCTION: J/psi + Pi
                                                  0,#RECONSTRUCTION: J/psi + Ks 
                                                  0,#RECONSTRUCTION: J/psi + K* (K+, Pi-)
                                                  0,#RECONSTRUCTION: J/psi + K* (K-, Pi+)
                                                  0,#RECONSTRUCTION: J/psi + phi
                                                  0,#RECONSTRUCTION: J/psi + pi pi <= psi', X(3872), Bs->J/psi f0
-                                         ),
+                                                 1,#RECONSTRUCTION: J/psi(mu+,mu-) + lambda0 (p+,pi-)           ravi
+                                         ), 
                                          detailMode = cms.bool(True),
                                          dropUnusedTracks = cms.bool(True),
                                          MuonTriggerMatchingPath = cms.vstring(""),
@@ -128,12 +129,12 @@ def finderMaker_75X(process, AddCaloMuon = False, runOnMC = True, HIFormat = Fal
                                          tkEtaCut = cms.double(999.0),#before fit
                                          jpsiPtCut = cms.double(0.0),#before fit
                                          uj_VtxChiProbCut = cms.double(0.01),
-                                         bPtCut = cms.vdouble(5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0),#before fit
-                                         bEtaCut = cms.vdouble(2.4, 2.4, 2.4, 2.4, 2.4, 2.4, 2.4),#before fit, not used currently
-                                         VtxChiProbCut = cms.vdouble(0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01),
-                                         svpvDistanceCut = cms.vdouble(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
-                                         MaxDocaCut = cms.vdouble(999., 999., 999., 999., 999., 999., 999.),
-                                         alphaCut = cms.vdouble(999., 999., 999., 999., 999., 999., 999.),
+                                         bPtCut = cms.vdouble(5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0,5.0),#before fit
+                                         bEtaCut = cms.vdouble(2.4, 2.4, 2.4, 2.4, 2.4, 2.4, 2.4, 2.4),#before fit, not used currently
+                                         VtxChiProbCut = cms.vdouble(0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01),
+                                         svpvDistanceCut = cms.vdouble(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                                         MaxDocaCut = cms.vdouble(999., 999., 999., 999., 999., 999., 999., 999.),
+                                         alphaCut = cms.vdouble(999., 999., 999., 999., 999., 999., 999., 999.),
                                          RunOnMC = cms.bool(False),
                                          doTkPreCut = cms.bool(True),
                                          doMuPreCut = cms.bool(True),
