@@ -6,9 +6,9 @@
 class BntupleBranches
 {//{{{
 public:
-  float tk1mass[7/*8*/] = {KAON_MASS, PION_MASS, PION_MASS,   KAON_MASS,  KAON_MASS,  KAON_MASS, PION_MASS /*,PROTON_MASS*/};
-  float tk2mass[7/*8*/] = {0,         0,         PION_MASS,   PION_MASS,  PION_MASS,  KAON_MASS, PION_MASS /*,PION_MASS*/};
-  float midmass[7/*8*/] = {0,         0,         KSHORT_MASS, KSTAR_MASS, KSTAR_MASS, PHI_MASS,  0 /*,LAMBDA0_MASS*/};                                     //ravi 13/09
+  float tk1mass[8] = {KAON_MASS, PION_MASS, PION_MASS,   KAON_MASS,  KAON_MASS,  KAON_MASS,PROTON_MASS, PION_MASS};
+  float tk2mass[8] = {0,         0,         PION_MASS,   PION_MASS,  PION_MASS,  KAON_MASS, PION_MASS, PION_MASS};
+  float midmass[8] = {0,         0,         KSHORT_MASS, KSTAR_MASS, KSTAR_MASS, PHI_MASS, LAMBDA0_MASS, 0};
 
   //EvtInfo
   int      RunNo;
@@ -725,13 +725,13 @@ public:
     nt->Branch("Gtk2phi",Gtk2phi,"Gtk2phi[Gsize]/F");
   }
   
-  void makeNtuple(int ifchannel[], int Btypesize[], bool REAL, bool skim, EvtInfoBranches *EvtInfo, VtxInfoBranches *VtxInfo, MuonInfoBranches *MuonInfo, TrackInfoBranches *TrackInfo, BInfoBranches *BInfo, GenInfoBranches *GenInfo, TTree* nt0, TTree* nt1, TTree* nt2, TTree* nt3, TTree* nt5, TTree* nt6, TTree* nt7)
+  void makeNtuple(int ifchannel[], int Btypesize[], bool REAL, bool skim, EvtInfoBranches *EvtInfo, VtxInfoBranches *VtxInfo, MuonInfoBranches *MuonInfo, TrackInfoBranches *TrackInfo, BInfoBranches *BInfo, GenInfoBranches *GenInfo, TTree* nt7) //prince
   {//{{{
     TVector3* bP = new TVector3;
     TVector3* bVtx = new TVector3;
     TLorentzVector* b4P = new TLorentzVector;
     fillTreeEvt(EvtInfo);
-    for(int t=0;t<8;t++)                         //changes should be done (ravi)
+    for(int t=0;t<8;t++) //prince
       {
         int tidx = t-1;
         if(t!=4)
@@ -769,17 +769,17 @@ public:
                   }
               }
 
-            if(t==0)      nt0->Fill();
-            else if(t==1) nt1->Fill();
-            else if(t==2) nt2->Fill();
-            else if(t==4) nt3->Fill();
-            else if(t==5) nt5->Fill();
-            else if(t==6) nt6->Fill();
-	          else if(t==7) nt7->Fill();             //ravi
+            // if(t==0)      nt0->Fill();
+            // else if(t==1) nt1->Fill();
+            // else if(t==2) nt2->Fill();
+            // else if(t==4) nt3->Fill();
+            // else if(t==5) nt5->Fill();
+            // if(t==6) nt6->Fill();
+            if(t==7) nt7->Fill();  //prince
           }
       }
     Jsize = 0;
-    if(ifchannel[8]==1)              //ravi
+    if(ifchannel[8]==1)           //prince
       {
         for(int j=0;j<BInfo->uj_size;j++)
           {
@@ -787,10 +787,10 @@ public:
               {
                 ;
               }
-            fillJpsiTree(bP, bVtx, b4P, j, Btypesize[7], REAL, EvtInfo, VtxInfo, MuonInfo, TrackInfo, BInfo, GenInfo);
+            fillJpsiTree(bP, bVtx, b4P, j, Btypesize[8], REAL, EvtInfo, VtxInfo, MuonInfo, TrackInfo, BInfo, GenInfo);
             Btypesize[8]++;
           }
-        nt8->Fill();                    //ravi
+        nt8->Fill();  //prince
       }
   }//}}}
   
@@ -824,7 +824,7 @@ public:
                 break;
               }
           }
-        int type7flag = sigtype!=7?-1:(TMath::Abs(GenInfo->pdgId[GenInfo->da2[j]])==113?1:0);
+        int type8flag = sigtype!=8?-1:(TMath::Abs(GenInfo->pdgId[GenInfo->da2[j]])==113?1:0); //prince
         GisSignal[gsize] = sigtype;
         Gmu1pt[gsize] = -1;
         Gmu1eta[gsize] = -20;
@@ -863,12 +863,12 @@ public:
                 Gmu2eta[gsize] = GenInfo->eta[GenInfo->da2[GenInfo->da1[j]]];
                 Gmu2phi[gsize] = GenInfo->phi[GenInfo->da2[GenInfo->da1[j]]];
                 Gmu2p[gsize] = Gmu2pt[gsize]*cosh(Gmu2eta[gsize]);
-                if(sigtype==1||sigtype==2 || type7flag==0)
+                if(sigtype==1||sigtype==2 || type8flag==0) //prince
                   {
                     Gtk1pt[gsize] = GenInfo->pt[GenInfo->da2[j]];
                     Gtk1eta[gsize] = GenInfo->eta[GenInfo->da2[j]];
                     Gtk1phi[gsize] = GenInfo->phi[GenInfo->da2[j]];
-                    if(sigtype==7)
+                    if(sigtype==8) //prince
                       {
                         Gtk2pt[gsize] = GenInfo->pt[GenInfo->da3[j]];
                         Gtk2eta[gsize] = GenInfo->eta[GenInfo->da3[j]];
@@ -890,6 +890,7 @@ public:
       }
     ntGen->Fill();
   }//}}}
+
   void fillTreeEvt(EvtInfoBranches *EvtInfo)
   {
     //Event Info
@@ -910,7 +911,6 @@ public:
     BSxErr = EvtInfo->BSxErr;
     BSyErr = EvtInfo->BSyErr;
     BSzErr = EvtInfo->BSzErr;
-  
     BSdxdz = EvtInfo->BSdxdz;
     BSdydz = EvtInfo->BSdydz;
     BSdxdzErr = EvtInfo->BSdxdzErr;
@@ -1440,7 +1440,7 @@ public:
             tk1Id = 321;//K+
             tk2Id = 321;//K-
           }
-        if(BInfo->type[j]==8)           //ravi
+        if(BInfo->type[j]==8)     //prince
           {
             BId.push_back(20443);//chic1
             BId.push_back(100443);//psi'
@@ -1449,20 +1449,19 @@ public:
             tk1Id = 211;//pi+
             tk2Id = 211;//pi-
           }
-	      if(BInfo->type[j]==7)
+        if(BInfo->type[j]==7) //prince
           {
-            BId.push_back(511);//B0
-	          MId = 3122;//lambda0
+            BId.push_back(5122);//B0
+            MId = 3122;//Lambda0
             tk1Id = 2212;//p+
-	          tk2Id = 211;//pi-                                 //ravi
+            tk2Id = -211;//pi-
+          }
 
-        int twoTks,kStar,flagkstar=0/*lambda0,flaglambda0=0*/;
+        int twoTks,kStar,flagkstar=0;
         if(BInfo->type[j]==1 || BInfo->type[j]==2) twoTks=0;
         else twoTks=1;
         if(BInfo->type[j]==4 || BInfo->type[j]==5) kStar=1;
         else kStar=0;
-	/*if(BInfo->type[j]==7) lambda0=1;
-	  else lambda0=0;*/                                        //ravi
         //int nonprompt=0,prompt=0;
         
         // tk1
@@ -1498,7 +1497,7 @@ public:
                               }
                             mGenIdxTk1=GenInfo->mo1[TrackInfo->geninfo_index[BInfo->rftk1_index[j]]];
                           }
-                        else if(BInfo->type[j]==7) // w/o resonance
+                        else if(BInfo->type[j]==8) // w/o resonance  //prince
                           {
                             mGenIdxTk1=0;
                             if(isBId(abs(GenInfo->pdgId[GenInfo->mo1[TrackInfo->geninfo_index[BInfo->rftk1_index[j]]]]), BId))
@@ -1543,7 +1542,7 @@ public:
                               }
                             mGenIdxTk2 = GenInfo->mo1[TrackInfo->geninfo_index[BInfo->rftk2_index[j]]];
                           }
-                        else if(BInfo->type[j]==7) // w/o resonance
+                        else if(BInfo->type[j]==8) // w/o resonance //prince
                           {
                             mGenIdxTk2 = 0;
                             if(isBId(abs(GenInfo->pdgId[GenInfo->mo1[TrackInfo->geninfo_index[BInfo->rftk2_index[j]]]]), BId))
@@ -1716,15 +1715,13 @@ public:
                   }
               }
           }//kstar End#############################################################################
-
-	//Similar code as above to be written for lambda0 (ravi)
-	
+        
         int tgenIndex=BgenIndex[typesize];
         if(Bgen[typesize]==23333 || Bgen[typesize]==41000 || Bgen[typesize]==24433 || Bgen[typesize]==24333 || Bgen[typesize]==23433)
           {
             Bgenpt[typesize] = GenInfo->pt[tgenIndex];
             BgenpdgId[typesize] = GenInfo->pdgId[tgenIndex];
-	    Bgenmass[typesize] = GenInfo->mass[tgenIndex];
+            Bgenmass[typesize] = GenInfo->mass[tgenIndex];
             BgencollisionId[typesize] = GenInfo->collisionId[tgenIndex];
             Bgeneta[typesize] = GenInfo->eta[tgenIndex];
             Bgenphi[typesize] = GenInfo->phi[tgenIndex];
@@ -1734,7 +1731,7 @@ public:
                          GenInfo->mass[tgenIndex]);
             Bgeny[typesize] = b4P->Rapidity();
           }
-          }
+      }
   }//}}}
 
   void fillJpsiTree(TVector3* bP, TVector3* bVtx, TLorentzVector* b4P, int j, int typesize, bool REAL, EvtInfoBranches *EvtInfo, VtxInfoBranches *VtxInfo, MuonInfoBranches *MuonInfo, TrackInfoBranches *TrackInfo, BInfoBranches *BInfo, GenInfoBranches *GenInfo)
@@ -2025,7 +2022,7 @@ public:
             tk2Id = 211;//K-
             twoTks = 1;
           }
-        if(Btype==6)
+        if(Btype==6) //prince
           {
             BId.push_back(531);//Bs
             MId = 333;//phi
@@ -2033,7 +2030,7 @@ public:
             tk2Id = -321;//K-
             twoTks = 1;
           }
-        if(Btype==8)                   //ravi
+        if(Btype==8)   //prince
           {
             BId.push_back(20443);//chic1
             BId.push_back(100443);//psi'
@@ -2043,13 +2040,14 @@ public:
             tk2Id = -211;//pi-
             twoTks = 1;
           }
-	if(BInfo->type[j]==7)                                                                                                                                                                            
-          {                                                                                                                                                                                                
-            BId.push_back(511);//B0                                                                                                                                                                        
-            MId = 3122;//lambda0                                                                                                                                                                          
-            tk1Id = 2212;//p+                                                                                                                                                                              
+        if(Btype==7)   //prince
+          {
+            BId.push_back(5122);//B0
+            MId = 3122;//lambda0
+            tk1Id = 2212;//p+
             tk2Id = -211;//pi-
-	    twoTks = 1                                            //ravi 
+            twoTks = 1;
+          }
         
         int flag=0; subtype=0;
         if(isBId(abs(GenInfo->pdgId[j]), BId))
@@ -2075,7 +2073,7 @@ public:
                                         if(GenInfo->pdgId[GenInfo->da1[GenInfo->da2[j]]]==tk1Id && GenInfo->pdgId[GenInfo->da2[GenInfo->da2[j]]]==tk2Id) flag++;
                                       }
                                   }
-                                else if(GenInfo->da3[j]!=-1 && Btype==8) // w/o resonance     //ravi
+                                else if(GenInfo->da3[j]!=-1 && Btype==8) // w/o resonance  //prince
                                   {
                                     if(GenInfo->pdgId[GenInfo->da2[j]]==tk1Id && GenInfo->pdgId[GenInfo->da3[j]]==tk2Id)
                                       { flag++; }

@@ -37,13 +37,13 @@ int loop(std::string inputname, std::string outputname, bool REAL,
   std::map<std::string, TTree*> trees, newtrees;
   TFile* inf = TFile::Open(inputname.c_str());
   TTree* root = (TTree*)inf->Get("Bfinder/root");
-  trees["hltanalysis"]   = (TTree*)inf->Get("hltanalysis/HltTree"); 
-  trees["hltobject"]     = (TTree*)inf->Get("hltobject/HLT_HIL3Mu0NHitQ10_L2Mu0_MAXdR3p5_M1to5_v");
-  trees["skimanalysis"]  = (TTree*)inf->Get("skimanalysis/HltTree");
-  trees["hiEvtAnalyzer"] = (TTree*)inf->Get("hiEvtAnalyzer/HiTree");
-  trees["HiForest"]      = (TTree*)inf->Get("HiForest/HiForestInfo");
-  trees["hltanalysis"]->SetBranchStatus("*", 0);
-  trees["hltanalysis"]->SetBranchStatus("HLT_HIL3Mu0NHitQ10_L2Mu0_MAXdR3p5_M1to5_v1*", 1);
+  // trees["hltanalysis"]   = (TTree*)inf->Get("hltanalysis/HltTree"); 
+  // trees["hltobject"]     = (TTree*)inf->Get("hltobject/HLT_HIL3Mu0NHitQ10_L2Mu0_MAXdR3p5_M1to5_v");
+  // trees["skimanalysis"]  = (TTree*)inf->Get("skimanalysis/HltTree");
+  // trees["hiEvtAnalyzer"] = (TTree*)inf->Get("hiEvtAnalyzer/HiTree");
+  // trees["HiForest"]      = (TTree*)inf->Get("HiForest/HiForestInfo");
+  // trees["hltanalysis"]->SetBranchStatus("*", 0);
+  // trees["hltanalysis"]->SetBranchStatus("HLT_HIL3Mu0NHitQ10_L2Mu0_MAXdR3p5_M1to5_v1*", 1);
 
   EvtInfoBranches* EvtInfo = new EvtInfoBranches;
   VtxInfoBranches* VtxInfo = new VtxInfoBranches;
@@ -125,7 +125,7 @@ int loop(std::string inputname, std::string outputname, bool REAL,
           tt.second->Fill();
         }
       int Btypesize[nchannel]={0, 0, 0, 0, 0, 0, 0, 0, 0};                //ravi
-      Bntuple->makeNtuple(ifchannel, Btypesize, REAL, skim, EvtInfo, VtxInfo, MuonInfo, TrackInfo, BInfo, GenInfo, nts["nt0"], nts["nt1"], nts["nt2"], nts["nt3"], nts["nt5"], nts["nt6"]/*nts["nt7"]*/, nts["nt8"]);                  //ravi 16/09
+      Bntuple->makeNtuple(ifchannel, Btypesize, REAL, skim, EvtInfo, VtxInfo, MuonInfo, TrackInfo, BInfo, GenInfo, nts["nt0"], nts["nt1"], nts["nt2"], nts["nt3"], nts["nt5"], nts["nt6"], nts["nt7"], nts["nt8"]); //prince 4/10                 //ravi 16/09
       if(!REAL) Bntuple->fillGenTree(nts["ntGen"], GenInfo);
     }
   xjjc::progressbar_summary(nentries);
