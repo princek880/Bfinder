@@ -4,7 +4,7 @@
 // Email: "tawei@mit.edu" or "ta-wei.wang@cern.ch"
 #include <memory>
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h" 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 
@@ -50,7 +50,7 @@
 #include "TrackingTools/TransientTrack/interface/TransientTrack.h"
 #include "RecoVertex/VertexPrimitives/interface/TransientVertex.h"
 #include "RecoVertex/KalmanVertexFit/interface/KalmanVertexFitter.h"
-#include "SimTracker/Records/interface/TrackAssociatorRecord.h"
+// #include "SimTracker/Records/interface/TrackAssociatorRecord.h"
         //KalmanTrimmedVertexFinder
 #include "RecoVertex/TrimmedKalmanVertexFinder/interface/KalmanTrimmedVertexFinder.h"
         //ROOT
@@ -88,7 +88,7 @@
 #include "DataFormats/MuonReco/interface/Muon.h"
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
-#include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
+// #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 
 #define MUON_MASS   0.10565837
 #define PION_MASS   0.13957018
@@ -103,7 +103,7 @@
 // class declaration
 //
 
-class Bfinder : public edm::EDAnalyzer
+class Bfinder : public edm::one::EDAnalyzer<edm::one::WatchRuns>
 {//{{{
     public:
         explicit Bfinder(const edm::ParameterSet&);
@@ -254,7 +254,7 @@ void Bfinder::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     using namespace edm;
     using namespace reco;
     //ESHandle<MagneticField> bField;
-    iSetup.get<IdealMagneticFieldRecord>().get(bField);
+    bField = iSetup.getHandle(idealMagneticFieldRecordToken_);
 
     // Change used muon and track collections
     edm::Handle< std::vector<pat::Muon> > muons;
@@ -410,7 +410,7 @@ void Bfinder::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     // get pile-up information
     if (!iEvent.isRealData() && RunOnMC_){
-        edm::Handle<std::vector< PileupSummaryInfo > >  PUHandle;
+        // edm::Handle<std::vector< PileupSummaryInfo > >  PUHandle;
         iEvent.getByLabel(puInfoLabel_, PUHandle);
         std::vector<PileupSummaryInfo>::const_iterator PVI;
         for(PVI = PUHandle->begin(); PVI != PUHandle->end(); ++PVI) {
